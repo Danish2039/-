@@ -1,7 +1,3 @@
-
-
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -30,6 +26,7 @@
       font-family: 'Lemon Milk', sans-serif;
       box-sizing: border-box;
       overflow: hidden;
+      position: relative;
     }
 
     .time {
@@ -113,6 +110,30 @@
       max-width: 150px;
     }
 
+    .usage-tracker {
+      position: absolute;
+      bottom: 10px;
+      font-size: 1rem;
+      color: var(--text-color);
+      text-align: center;
+    }
+
+    .doodles {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+    }
+
+    .doodles img {
+      position: absolute;
+      height: 80px;
+      width: auto;
+      opacity: 0.2;
+    }
+
     @media (max-width: 768px) {
       .time {
         font-size: calc(8vw + 1rem);
@@ -121,6 +142,10 @@
       .buttons button {
         padding: 10px;
         font-size: 0.9rem;
+      }
+
+      .doodles img {
+        height: 60px;
       }
     }
 
@@ -133,6 +158,10 @@
       .buttons button {
         padding: 8px;
         font-size: 0.8rem;
+      }
+
+      .doodles img {
+        height: 40px;
       }
     }
   </style>
@@ -172,16 +201,28 @@
     <button id="reset">Reset</button>
   </div>
 
+  <div class="doodles">
+    <img src="https://img.icons8.com/external-flatart-icons-lineal-color-flatarticons/64/null/external-books-back-to-school-flatart-icons-lineal-color-flatarticons.png" alt="Books" style="top: 10%; left: 15%;">
+    <img src="https://img.icons8.com/external-flatart-icons-lineal-color-flatarticons/64/null/external-light-bulb-education-flatart-icons-lineal-color-flatarticons.png" alt="Light Bulb" style="top: 30%; left: 60%;">
+    <img src="https://img.icons8.com/external-flatart-icons-lineal-color-flatarticons/64/null/external-laptop-education-flatart-icons-lineal-color-flatarticons.png" alt="Laptop" style="top: 50%; left: 30%;">
+    <img src="https://img.icons8.com/external-flatart-icons-lineal-color-flatarticons/64/null/external-pencil-education-flatart-icons-lineal-color-flatarticons.png" alt="Pencil" style="top: 70%; left: 10%;">
+    <img src="https://img.icons8.com/external-flatart-icons-lineal-color-flatarticons/64/null/external-backpack-education-flatart-icons-lineal-color-flatarticons.png" alt="Backpack" style="top: 80%; left: 70%;">
+  </div>
+
+  <div class="usage-tracker" id="usageTracker">Total Study Time: 00:00:00</div>
+
   <script>
     let timerInterval;
     let isRunning = false;
     let totalSeconds = 0;
+    let totalStudyTime = parseInt(localStorage.getItem('totalStudyTime')) || 0;
 
     const timeDisplay = document.getElementById('time');
     const startStopButton = document.getElementById('startStop');
     const resetButton = document.getElementById('reset');
     const inputMinutes = document.getElementById('inputMinutes');
     const themeSelector = document.getElementById('theme');
+    const usageTracker = document.getElementById('usageTracker');
 
     function formatTime(seconds) {
       const hrs = String(Math.floor(seconds / 3600)).padStart(2, '0');
@@ -194,11 +235,18 @@
       timeDisplay.textContent = formatTime(totalSeconds);
     }
 
+    function updateUsageTracker() {
+      usageTracker.textContent = `Total Study Time: ${formatTime(totalStudyTime)}`;
+    }
+
     function startTimer() {
       timerInterval = setInterval(() => {
         if (totalSeconds > 0) {
           totalSeconds--;
+          totalStudyTime++;
           updateDisplay();
+          updateUsageTracker();
+          localStorage.setItem('totalStudyTime', totalStudyTime);
         } else {
           stopTimer();
           alert('Time is up!');
@@ -264,38 +312,4 @@
           break;
         case 'pastel-yellow':
           document.documentElement.style.setProperty('--background-color', '#fffacd');
-          document.documentElement.style.setProperty('--text-color', '#8b8000');
-          document.documentElement.style.setProperty('--button-bg', '#8b8000');
-          document.documentElement.style.setProperty('--button-hover-bg', '#bdb76b');
-          break;
-        case 'pastel-mint':
-          document.documentElement.style.setProperty('--background-color', '#f5fffa');
-          document.documentElement.style.setProperty('--text-color', '#006400');
-          document.documentElement.style.setProperty('--button-bg', '#006400');
-          document.documentElement.style.setProperty('--button-hover-bg', '#228b22');
-          break;
-        case 'pastel-orange':
-          document.documentElement.style.setProperty('--background-color', '#ffefd5');
-          document.documentElement.style.setProperty('--text-color', '#ff4500');
-          document.documentElement.style.setProperty('--button-bg', '#ff4500');
-          document.documentElement.style.setProperty('--button-hover-bg', '#ff6347');
-          break;
-        case 'amoled':
-          document.documentElement.style.setProperty('--background-color', '#000');
-          document.documentElement.style.setProperty('--text-color', '#fff');
-          document.documentElement.style.setProperty('--button-bg', '#333');
-          document.documentElement.style.setProperty('--button-hover-bg', '#666');
-          break;
-        default:
-          document.documentElement.style.setProperty('--background-color', '#fdf6e3');
-          document.documentElement.style.setProperty('--text-color', '#333');
-          document.documentElement.style.setProperty('--button-bg', '#222');
-          document.documentElement.style.setProperty('--button-hover-bg', '#555');
-          break;
-      }
-    });
-
-    updateDisplay();
-  </script>
-</body>
-</html>
+          document.documentElement.style.setProperty
