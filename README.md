@@ -1,5 +1,5 @@
-# Minimal-Pomodoro
-A cute clock
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
